@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IBH Weather</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="antixss.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h1>IBH Weather - Beállítás</h1>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                    <span class="input-group-text">Helység</span>
+            </div>
+            <input id="location_name" type="text" class="form-control" />
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Latitude / Longitude</span>
+            </div>
+            <input id="gps_lat" type="text" class="form-control" />
+            <input id="gps_long" type="text" class="form-control" />
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Tengerszint feletti magasság</span>
+            </div>
+            <input id="altitude" type="text" class="form-control" />
+            <div class="input-group-prepend">
+                <span class="input-group-text">méter</span>
+            </div>
+        </div>
+        <div class="input-group" style="margin: 5px;">
+            <button id="btnSave" type="button" class="btn btn-primary">Mentés</button>
+        </div>
+        <input type="hidden" id="setupId" />
+        <p id="response" class="lead text-center"></p>
+
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <span><a href="mailto:pillesoft@gmail.com">IBH Weather</a></span>
+        </div>
+    </footer>
+
+</body>
+
+
+</html>
+
+
+<script>
+    //Submit data when enter key is pressed
+    $('#btnSave').click(function (e) {
+        var id = $('#setupId').val();
+        var locName = $('#location_name').val();
+        var gpsLat = $('#gps_lat').val();
+        var gpsLong = $('#gps_long').val();
+        var altitude = $('#altitude').val();
+        //POST request to API to create a new visitor entry in the database
+        $.ajax({
+            method: "POST",
+            url: "./api/weather/setup",
+            contentType: "application/json",
+            data: JSON.stringify({ id: id, locName: locName, gpsLat: gpsLat, gpsLong: gpsLong, altitude: altitude })
+        })
+        .done(function (data) {
+            if (data) {
+                if (data._id) {
+                    $('#setupId').val(data._id);
+                    $('#response').html("Beállítás elmentve");
+                } else {
+                    $('#response').html("van data, de nincs id");
+                }
+            } else {
+                $('#response').html("vmi gaz van");
+            }
+            getSetup();
+        });
+    });
+
+    //Retrieve setup based on the id
+    function getSetup() {
+        $('#location_name').val("");
+        $('#gps_lat').val("");
+        $('#gps_long').val("");
+        $('#altitude').val("");
+        $('#setupId').val("");
+        
+        var id = $('#setupId').val();
+        $.ajax({
+            method: "GET",
+            url: "./api/weather/setup",
+            contentType: "application/json",
+            data: JSON.stringify({ setupId: id })
+        })
+        .done(function (data) {
+                if (data) {
+                    $('#location_name').val(data.locationName);
+                    $('#gps_lat').val(data.gpsLatitude);
+                    $('#gps_long').val(data.gpsLongitude);
+                    $('#altitude').val(data.altitude);
+                    $('#setupId').val(data._id);
+                }
+            });
+    }
+
+    //Call getSetup on page load.
+    getSetup();
+
+
+</script>

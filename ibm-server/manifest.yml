@@ -1,0 +1,9 @@
+---
+applications:
+ - name: IBH-Weather
+   #random-route: true
+   routes: 
+   - route: ibh-weather.apps.internal
+   - route: ibh-weather.eu-gb.mybluemix.net
+   #host: ibh-weather
+   memory: 256M

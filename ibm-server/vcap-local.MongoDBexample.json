@@ -1,0 +1,12 @@
+{
+  "services": {
+    "compose-for-mongodb": [
+      {
+        "credentials": {
+          "uri":"mongodb://localhost:27017"
+        },
+        "label": "compose-for-mongodb"
+      }
+    ]
+  }
+}
