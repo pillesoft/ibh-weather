@@ -1,2 +1,2 @@
-const char *wifi_ssid = "horvath";
-const char *wifi_password = "Oshazakeresoink Nyomaban";
+const char *wifi_ssid = "Bathory2";
+const char *wifi_password = "N5cun6sanbux";
